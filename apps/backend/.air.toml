@@ -1,0 +1,10 @@
+[build]
+  # Change 'tmp' to './tmp' for explicit pathing
+  bin = "./tmp/main.exe"
+  cmd = "go build -o ./tmp/main.exe ."
+  # This helps Windows handle the binary cleanup
+  full_bin = "./tmp/main.exe"
+  # Add this to ignore folders that might cause permission loops
+  exclude_dir = ["assets", "tmp", "vendor", "testdata"]
+  # Use 'true' if you run into issues with the terminal not clearing
+  send_interrupt = true
