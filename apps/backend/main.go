@@ -3,7 +3,7 @@ package main
 import (
 	"iiitn-predict/packages/database"
 	"net/http"
-
+    "regexp"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -25,6 +25,12 @@ type AdminRequest struct{
     Role        database.RoleType `json:"role"`
 }
 
+func validEmail(email string) bool{
+    pattern := `^[a-z]{2}[0-9]{2}[a-z]{3}[0-9]{3}@iiitn\.ac\.in$`
+    matched, _ := regexp.MatchString(pattern, email)
+    return matched
+}
+
 func signup(c *gin.Context){
     var req SignupRequest
     if err := c.ShouldBindJSON(&req); err != nil{
@@ -44,8 +50,10 @@ func signup(c *gin.Context){
         Balance: 10000,
         Role: database.RoleTypeStudent,
     }
-
-    // regex check for the email
+    if(!validEmail(req.Email)){
+        c.JSON(http.StatusBadRequest, gin.H{"error": "invalid email"})
+        return
+    }
 
     if err := database.DB.Create(&user).Error; err != nil {
         c.JSON(http.StatusBadRequest, gin.H{"error": "email already exist"})
