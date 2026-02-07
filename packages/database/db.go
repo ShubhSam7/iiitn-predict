@@ -39,30 +39,7 @@ func InitDB() {
     }
 }
 
-func SeedAdmin() {
-	var count int64
-	if err := DB.Model(&User{}).Where("role = ?", RoleTypeAdmin).Count(&count).Error; err != nil {
-		panic("Failed to check for existing admin user: " + err.Error())
-	}
 
-	if count > 0 {
-		fmt.Println("Admin user already exists, skipping seeding")
-		return
-	}
-	
-	admin := User{
-		Name:     "Shubh",
-		Email:    "bt23csa@iiitn.ac.in",
-		Password: "bl4lA8MX<9)2{rX",
-		Role:     RoleTypeAdmin,
-	}
-
-	if err := DB.Create(&admin).Error; err != nil {
-		panic("Failed to seed admin user: " + err.Error())
-	}
-
-	fmt.Println("Admin user seeded successfully")
-}
 
 type RoleType int
 

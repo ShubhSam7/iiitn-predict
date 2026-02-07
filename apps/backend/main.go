@@ -102,7 +102,7 @@ func admin_login(c *gin.Context){
     }
 
     if err := database.DB.Where("email = ?", req.Email).First(&user).Error; err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": "Email is wrong"})
+        c.JSON(http.StatusBadRequest, gin.H{"error": "Email not found"})
         return
     }
 
@@ -121,6 +121,7 @@ func admin_login(c *gin.Context){
 
 func main() {
     database.InitDB()
+    database.SeedAdmin()
     r := gin.Default()
 
     auth := r.Group("/auth")
