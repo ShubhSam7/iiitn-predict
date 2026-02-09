@@ -1,4 +1,4 @@
-module github.com/ShubhSam7/iiitn-predict-backend
+module iiitn-predict/apps/backend
 
 go 1.25.6
 
