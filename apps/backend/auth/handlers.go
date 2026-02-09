@@ -3,10 +3,13 @@ package auth
 import (
 	"net/http"
 	"regexp"
-
+	"github.com/golang-jwt/jwt/v5"
 	"iiitn-predict/packages/database"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
+    "os"
+    "time"
+    "encoding/json"
 )
 
 type SignupRequest struct{
@@ -86,7 +89,23 @@ func Signin(c *gin.Context){
         return
     }
 
-    c.JSON(http.StatusOK, gin.H{"msg": "Login is Successfull", "balance": user.Balance}) 
+    token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+        "user_id": user.ID,
+        "exp":     jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
+    })
+
+    tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
+    if err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
+        return
+    }
+
+    c.Header("Authorization", "Bearer "+tokenString)
+	json.NewEncoder(c.Writer).Encode(map[string]string{
+		"token": tokenString,
+	})
+
+    c.JSON(http.StatusOK, gin.H{"msg": "Login is Successfull", "balance": user.Balance, "token": tokenString}) 
 }
 
 func AdminLogin(c *gin.Context){
@@ -117,5 +136,21 @@ func AdminLogin(c *gin.Context){
         return
     }
 
-    c.JSON(http.StatusOK, gin.H{"msg": "Admin Login is Successfull"})
+    token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+        "user_id": user.ID,
+        "exp":     jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
+    })
+
+    tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
+    if err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
+        return
+    }
+
+    c.Header("Authorization", "Bearer "+tokenString)
+	json.NewEncoder(c.Writer).Encode(map[string]string{
+		"token": tokenString,
+	})
+
+    c.JSON(http.StatusOK, gin.H{"msg": "Admin is login is Successfull", "balance": user.Balance, "token": tokenString})
 }

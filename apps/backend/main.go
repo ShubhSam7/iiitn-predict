@@ -2,7 +2,9 @@ package main
 
 import (
 	"iiitn-predict/apps/backend/auth"
+	// "iiitn-predict/apps/backend/bet"
 	"iiitn-predict/packages/database"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -17,6 +19,13 @@ func main() {
         authGroup.POST("/signin", auth.Signin) // signin the user
         authGroup.POST("/admin/login", auth.AdminLogin) //admin login
     }
+
+    // betGroup := r.Group("/bet")
+    // betGroup.Use(auth.Middleware(context.Background())) // auth middleware to protect the routes
+    // {
+    //     betGroup.POST("/place", bet.PlaceBet) // place a bet
+    //     betGroup.POST("/discussion", bet.DiscussionOnBet) // discussion on a bet
+    // }
 
     r.GET("/ping", func(c *gin.Context) {
         c.JSON(200, gin.H{
