@@ -1,9 +1,10 @@
 package bet
 
 import (
+	"fmt"
 	"iiitn-predict/packages/database"
 	"time"
-	"fmt"
+
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -198,7 +199,6 @@ func PlaceBet(c *gin.Context) {
 }	
 
 type BetDiscussionRequest struct {
-	UserID  uint   `json:"user_id"`
 	MarketID uint   `json:"market_id"`
 	Comment  string `json:"comment"`
 }
@@ -211,8 +211,15 @@ func DiscussionOnBet(c *gin.Context) {
 		return
 	}
 
+	// Get user ID from auth middleware context
+	userID, exists := c.Get("user_id")
+	if !exists {
+		c.JSON(401, gin.H{"error": "Unauthorized"})
+		return
+	}
+
 	var user database.User
-	if err := database.DB.First(&user, req.UserID).Error; err != nil {
+	if err := database.DB.First(&user, userID).Error; err != nil {
 		c.JSON(500, gin.H{"error": "No such user is present"})
 		return
 	}
@@ -229,7 +236,7 @@ func DiscussionOnBet(c *gin.Context) {
 	}
 
 	comment := database.Comment{
-		UserID: req.UserID,
+		UserID: userID.(uint),
 		MarketID: req.MarketID,
 		Content: req.Comment,
 	}
