@@ -35,6 +35,7 @@ func InitDB() {
 
 	log.Println("Database connected successfully")
 
+	// Run migrations
 	if err := DB.AutoMigrate(
 		&User{},
 		&Market{},
@@ -44,6 +45,14 @@ func InitDB() {
 		&Comment{},
 	); err != nil {
 		panic(fmt.Sprintf("Failed to migrate database: %v", err))
+	}
+
+	// Manual migration: Drop old 'amount' column from positions table if it exists
+	if DB.Migrator().HasColumn(&Position{}, "amount") {
+		log.Println("Dropping old 'amount' column from positions table...")
+		if err := DB.Migrator().DropColumn(&Position{}, "amount"); err != nil {
+			log.Printf("Warning: Failed to drop old 'amount' column: %v", err)
+		}
 	}
 }
 
@@ -115,9 +124,9 @@ type Market struct {
 }
 
 type MarketHistory struct {
-	MarketID    uint      `gorm:"primaryKey"`
+	gorm.Model
+	MarketID    uint      `gorm:"not null;index"`
 	Probability float64   `gorm:"not null"`
-	CreatedAt   time.Time `gorm:"autoCreateTime"`
 }
 
 type Position struct {

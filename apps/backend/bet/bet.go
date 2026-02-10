@@ -57,7 +57,6 @@ func CreateBet(c *gin.Context) {
 }
 
 type PlaceBetRequest struct {
-	UserID    uint    `json:"user_id"`
 	Amount    int32 `json:"amount"`
 	MarketID  uint    `json:"market_id"`
 	IsYes     bool    `json:"is_yes"`
@@ -70,8 +69,15 @@ func PlaceBet(c *gin.Context) {
 		return
 	}
 
+	// Get user ID from auth middleware context
+	userID, exists := c.Get("user_id")
+	if !exists {
+		c.JSON(401, gin.H{"error": "Unauthorized"})
+		return
+	}
+
 	var user database.User
-	if err := database.DB.First(&user, req.UserID).Error; err != nil {
+	if err := database.DB.First(&user, userID).Error; err != nil {
 		c.JSON(500, gin.H{"error": "No such user is present"})
 		return
 	}
@@ -80,7 +86,7 @@ func PlaceBet(c *gin.Context) {
 
 		// A. Fetch User & Lock Row (Prevent double spending)
 		var user database.User
-		if err := tx.Set("gorm:query_option", "FOR UPDATE").First(&user, req.UserID).Error; err != nil {
+		if err := tx.Set("gorm:query_option", "FOR UPDATE").First(&user, userID).Error; err != nil {
 			return fmt.Errorf("user not found")
 		}
 
@@ -148,7 +154,7 @@ func PlaceBet(c *gin.Context) {
 
 		// 3. Create Transaction Record
 		transaction := database.Transaction{
-			UserID:      req.UserID,
+			UserID:      userID.(uint),
 			MarketID:    &req.MarketID,
 			Amount:      (float64)(req.Amount),
 			Type:        database.TransactionTypeBetPlaced,
@@ -161,23 +167,27 @@ func PlaceBet(c *gin.Context) {
 		// 4. Create/Update Position (User's Portfolio)
 		var position database.Position
 		// Check if user already has a position on this side
-		result := tx.Where("user_id = ? AND market_id = ? AND is_yes = ?", req.UserID, req.MarketID, req.IsYes).First(&position)
+		result := tx.Where("user_id = ? AND market_id = ? AND is_yes = ?", userID, req.MarketID, req.IsYes).First(&position)
 		
 		if result.Error == nil {
 			// Update existing position
 			position.Shares += sharesReceived
 			position.AmountSpent += (float64)(req.Amount)
-			tx.Save(&position)
+			if err := tx.Save(&position).Error; err != nil {
+				return err
+			}
 		} else {
 			// Create new position
 			newPos := database.Position{
-				UserID:      req.UserID,
+				UserID:      userID.(uint),
 				MarketID:    req.MarketID,
 				IsYes:       req.IsYes,
 				Shares:      sharesReceived,
 				AmountSpent: (float64)(req.Amount),
 			}
-			tx.Create(&newPos)
+			if err := tx.Create(&newPos).Error; err != nil {
+				return err
+			}
 		}
 
 		// 5. Update Graph History
@@ -185,7 +195,9 @@ func PlaceBet(c *gin.Context) {
 			MarketID:    req.MarketID,
 			Probability: market.Probability,
 		}
-		tx.Create(&history)
+		if err := tx.Create(&history).Error; err != nil {
+			return err
+		}
 
 		return nil // Commit transaction
 	})
