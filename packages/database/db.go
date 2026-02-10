@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
@@ -13,87 +14,134 @@ import (
 var DB *gorm.DB
 
 func InitDB() {
-    if err := godotenv.Load("../../.env"); err != nil {
-        log.Println("No .env file found, using system environment variables")
-    }
+	if err := godotenv.Load("../../.env"); err != nil {
+		log.Println("No .env file found, using system environment variables")
+	}
 
-    dsn := os.Getenv("DATABASE_URL")
-    
-    if dsn == "" {
-        panic("DATABASE_URL is not set in environment")
-    }
-    
-    fmt.Println("Connecting to database...")
-    
-    var err error
-    DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
-    
-    if err != nil {
-        panic(fmt.Sprintf("Failed to connect to database: %v", err))
-    }
+	dsn := os.Getenv("DATABASE_URL")
 
-    log.Println("Database connected successfully")
-    
-    if err := DB.AutoMigrate(&User{}, &Market{}, &Position{}, &Transaction{}); err != nil {
-        panic(fmt.Sprintf("Failed to migrate database: %v", err))
-    }
+	if dsn == "" {
+		panic("DATABASE_URL is not set in environment")
+	}
+
+	fmt.Println("Connecting to database...")
+
+	var err error
+	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+
+	if err != nil {
+		panic(fmt.Sprintf("Failed to connect to database: %v", err))
+	}
+
+	log.Println("Database connected successfully")
+
+	if err := DB.AutoMigrate(
+		&User{},
+		&Market{},
+		&MarketHistory{},
+		&Position{},
+		&Transaction{},
+		&Comment{},
+	); err != nil {
+		panic(fmt.Sprintf("Failed to migrate database: %v", err))
+	}
 }
 
-
-
-type RoleType int
+type RoleType string
 
 const (
-	RoleTypeAdmin RoleType = iota
-	RoleTypeStudent
+	RoleTypeAdmin   RoleType = "ADMIN"
+	RoleTypeStudent RoleType = "STUDENT"
 )
 
-type CategoryType int
+type MarketStatus string
 
-type StatusType int
 const (
-	StatusTypeActive StatusType = iota
-	StatusTypeClosed
+	StatusActive   MarketStatus = "ACTIVE"
+	StatusLocked   MarketStatus = "LOCKED"
+	StatusResolved MarketStatus = "RESOLVED"
 )
 
-type TransactionType int
+type TransactionType string
 
 const (
-	TransactionTypeSignupBonus TransactionType = iota
-	TransactionTypeBetPlaced
-	TransactionTypePayout
+	TransactionTypeSignupBonus TransactionType = "SIGNUP_BONUS"
+	TransactionTypeDeposit     TransactionType = "DEPOSIT"
+	TransactionTypeBetPlaced   TransactionType = "BET_PLACED"
+	TransactionTypePayout      TransactionType = "PAYOUT"
+)
+
+type CategoryType string
+
+const (
+	CategoryTech   CategoryType = "TECH"
+	CategorySports CategoryType = "SPORTS"
+	CategoryCrypto CategoryType = "CRYPTO"
+	CategoryCampus CategoryType = "CAMPUS"
 )
 
 type User struct {
-    gorm.Model
-    Name     string `gorm:"not null"`
-    Password string `gorm:"not null"`
-    Email    string `gorm:"uniqueIndex;not null"`
-    Balance  int32  `gorm:"default:10000"`
-    Role     RoleType
+	gorm.Model
+    ID          uint     `gorm:"primaryKey"`
+	Name         string   `gorm:"not null"`
+	Password     string   `gorm:"not null"`
+	Email        string   `gorm:"uniqueIndex;not null"`
+	Balance      float64  `gorm:"default:1000.0;not null"`
+	Role         RoleType `gorm:"default:'STUDENT'"`
+	Positions    []Position
+	Transactions []Transaction
+	Comments     []Comment
 }
 
 type Market struct {
-    gorm.Model
-    Question    string `gorm:"not null"`
-    Description string
-    Category    CategoryType
-    Status      StatusType	
-    Outcome     bool
+	gorm.Model
+	Question    string       `gorm:"not null"`
+	Description string       `gorm:"type:text"`
+	ImageUrl    string       
+	Category    CategoryType `gorm:"index"`
+	Status      MarketStatus `gorm:"default:'ACTIVE';index"`
+	
+	PoolYes     float64      `gorm:"default:0"`
+	PoolNo      float64      `gorm:"default:0"`
+	
+	Probability float64      `gorm:"default:50.0"`
+	
+	EndTime     time.Time    `gorm:"not null"`
+	Outcome     *bool        
+	
+	Positions     []Position
+	MarketHistory []MarketHistory
+	Comments      []Comment
+}
+
+type MarketHistory struct {
+	MarketID    uint      `gorm:"primaryKey"`
+	Probability float64   `gorm:"not null"`
+	CreatedAt   time.Time `gorm:"autoCreateTime"`
 }
 
 type Position struct {
-    gorm.Model
-    UserID   uint   `gorm:"not null"`
-    MarketID uint   `gorm:"not null"`
-    Outcome  bool  
-    Amount   int32  `gorm:"not null"`
+	gorm.Model
+	UserID      uint    `gorm:"not null;index"`
+	MarketID    uint    `gorm:"not null;index"`
+	IsYes       bool    `gorm:"not null"`
+	Shares      float64 `gorm:"not null"`
+	AmountSpent float64 `gorm:"not null"`
 }
 
 type Transaction struct {
-    gorm.Model
-    UserID      uint             `gorm:"not null"`
-    Amount      int32            `gorm:"not null"`
-    TransType   TransactionType
-    ReferenceID uint           
+	gorm.Model
+	UserID      uint            `gorm:"not null;index"`
+	Amount      float64         `gorm:"not null"`
+	Type        TransactionType `gorm:"not null"`
+	MarketID    *uint           
+	Description string          
+}
+
+type Comment struct {
+	gorm.Model
+	UserID   uint   `gorm:"not null;index"`
+	MarketID uint   `gorm:"not null;index"`
+	Content  string `gorm:"type:text;not null"`
+	User     User   `gorm:"foreignKey:UserID"`
 }

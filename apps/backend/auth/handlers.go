@@ -1,15 +1,16 @@
 package auth
 
 import (
-	"net/http"
-	"regexp"
-	"github.com/golang-jwt/jwt/v5"
+	"encoding/json"
 	"iiitn-predict/packages/database"
+	"net/http"
+	"os"
+	"regexp"
+	"time"
+
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
-    "os"
-    "time"
-    "encoding/json"
 )
 
 type SignupRequest struct{
