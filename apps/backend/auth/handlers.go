@@ -116,12 +116,7 @@ func AdminLogin(c *gin.Context){
         return
     }
 
-    user := database.User{
-        Name: req.Email,
-        Email: req.Email,
-        Role: req.Role,
-    }
-
+    var user database.User
     if err := database.DB.Where("email = ?", req.Email).First(&user).Error; err != nil {
         c.JSON(http.StatusBadRequest, gin.H{"error": "Email not found"})
         return
