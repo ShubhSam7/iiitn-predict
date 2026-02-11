@@ -65,7 +65,8 @@ export default function LandingPage() {
               <button className="px-5 py-2 text-sm font-semibold hover:text-[#a6a5f2] transition-colors">
                 Log In
               </button>
-              <button className="px-6 py-2.5 bg-[#a6a5f2] hover:bg-[#8f8edb] rounded-full text-sm font-bold text-white transition-colors">
+              <button onClick={() => window.location.href = '/signup'}
+              className="px-6 py-2.5 bg-[#a6a5f2] hover:bg-[#8f8edb] rounded-full text-sm font-bold text-white transition-colors">
                 Sign Up
               </button>
             </div>
