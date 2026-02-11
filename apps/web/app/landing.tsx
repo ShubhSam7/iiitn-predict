@@ -37,7 +37,7 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-[#1e1e1e] text-white overflow-x-hidden">
       {/* Navbar */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#1e1e1e]/98 border-b border-white/5">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#1e1e1e]/80 backdrop-blur-xl border-b border-white/5">
         <div className="max-w-7xl mx-auto px-8 py-4">
           <div className="flex items-center justify-between">
             {/* Logo */}
@@ -84,7 +84,7 @@ export default function LandingPage() {
               </div>
 
               <h2 className="text-5xl md:text-7xl font-black leading-tight">
-                Predict. Play. <span className="text-[#8b5cf6]">Prevail.</span>
+                Predict. Play. <span className="text-[#a6a5f2]">Prevail.</span>
               </h2>
 
               <p className="text-xl text-gray-400 leading-relaxed">
@@ -116,7 +116,7 @@ export default function LandingPage() {
                 { label: "Players", value: "1.2K+" },
               ].map((stat, i) => (
                 <div key={i} className="space-y-1">
-                  <p className="text-2xl font-black text-[#8b5cf6]">
+                  <p className="text-2xl font-black text-[#a6a5f2]">
                     {stat.value}
                   </p>
                   <p className="text-xs text-gray-500 font-medium">
@@ -229,19 +229,15 @@ export default function LandingPage() {
 
                   {/* Probability Display */}
                   <div className="mb-4">
-                    <div className="flex gap-2 mb-2">
-                      <div className="flex-1 h-2 bg-green-500/20 rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-green-500"
-                          style={{ width: `${market.yesPercent}%` }}
-                        />
-                      </div>
-                      <div className="flex-1 h-2 bg-red-500/20 rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-red-500"
-                          style={{ width: `${market.noPercent}%` }}
-                        />
-                      </div>
+                    <div className="h-2 bg-red-500/20 rounded-full overflow-hidden mb-2 flex">
+                      <div
+                        className="h-full bg-green-500"
+                        style={{ width: `${market.yesPercent}%` }}
+                      />
+                      <div
+                        className="h-full bg-red-500"
+                        style={{ width: `${market.noPercent}%` }}
+                      />
                     </div>
                     <div className="flex justify-between text-xs text-gray-400 font-medium">
                       <span>Yes {market.yesPercent}%</span>
