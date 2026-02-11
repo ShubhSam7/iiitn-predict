@@ -35,171 +35,246 @@ export default function LandingPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#1e1e1e] text-white">
+    <div className="min-h-screen bg-[#1e1e1e] text-white overflow-x-hidden">
       {/* Navbar */}
-      <nav className="fixed top-0 w-full z-50 backdrop-blur-md bg-[#1e1e1e]/80 border-b border-[#a9f99e]/20">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-8">
-            <h1 className="text-2xl font-bold">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#1e1e1e]/98 border-b border-white/5">
+        <div className="max-w-7xl mx-auto px-8 py-4">
+          <div className="flex items-center justify-between">
+            {/* Logo */}
+            <h1 className="text-2xl font-black tracking-tight">
               <span className="text-white">IIITN</span>
-              <span className="text-[#A7A4F2]">Predict</span>
+              <span className="text-[#a6a5f2]">Predict</span>
             </h1>
-            <div className="hidden md:flex gap-6 text-sm">
-              <a
-                href="#markets"
-                className="hover:text-[#A7A4F2] transition-colors"
-              >
-                Markets
-              </a>
-              <a
-                href="#leaderboard"
-                className="hover:text-[#A7A4F2] transition-colors"
-              >
-                Leaderboard
-              </a>
-              <a
-                href="#portfolio"
-                className="hover:text-[#A7A4F2] transition-colors"
-              >
-                Portfolio
-              </a>
+
+            {/* Nav Links - Centered */}
+            <div className="hidden md:flex gap-8 text-sm font-medium absolute left-1/2 -translate-x-1/2">
+              {["Markets", "Leaderboard", "Portfolio"].map((link) => (
+                <a
+                  key={link}
+                  href={`#${link.toLowerCase()}`}
+                  className="relative group py-1 transition-colors hover:text-[#a6a5f2]"
+                >
+                  {link}
+                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#a6a5f2] group-hover:w-full transition-all duration-300" />
+                </a>
+              ))}
             </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <button className="px-6 py-2 text-sm font-medium hover:text-[#A7A4F2] transition-colors">
-              Sign In
-            </button>
-            <button className="px-6 py-2 bg-[#A7A4F2] hover:bg-[#A7A4F2]/90 rounded-full text-sm font-medium text-black transition-all">
-              Sign Up
-            </button>
+
+            {/* Auth Buttons */}
+            <div className="flex items-center gap-3">
+              <button className="px-5 py-2 text-sm font-semibold hover:text-[#a6a5f2] transition-colors">
+                Log In
+              </button>
+              <button className="px-6 py-2.5 bg-[#a6a5f2] hover:bg-[#8f8edb] rounded-full text-sm font-bold text-white transition-colors">
+                Sign Up
+              </button>
+            </div>
           </div>
         </div>
       </nav>
 
       {/* Hero Section */}
       <section className="pt-32 pb-20 px-6">
-        <div className="max-w-6xl mx-auto text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <h2 className="text-6xl md:text-7xl font-bold mb-6 leading-tight">
-              Predict. Play. <span className="text-[#A7A4F2]">Prevail.</span>
-            </h2>
-            <p className="text-xl text-gray-400 mb-10 max-w-2xl mx-auto">
-              The ultimate campus prediction market for IIIT Nagpur. Trade
-              virtual coins on college events, compete with peers, and prove
-              your forecasting skills.
-            </p>
-            <div className="flex gap-4 justify-center flex-wrap">
-              <button className="px-8 py-4 bg-[#A7A4F2] hover:bg-[#A7A4F2]/90 rounded-full font-semibold text-lg text-black transition-all">
+        <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+          {/* Left Side - Content */}
+          <div className="space-y-8">
+            <div className="space-y-4">
+              <div className="inline-block px-4 py-1.5 bg-[#8b5cf6]/10 border border-[#8b5cf6]/30 rounded-full text-sm font-semibold text-[#8b5cf6]">
+                🎮 Campus Prediction Market
+              </div>
+
+              <h2 className="text-5xl md:text-7xl font-black leading-tight">
+                Predict. Play. <span className="text-[#8b5cf6]">Prevail.</span>
+              </h2>
+
+              <p className="text-xl text-gray-400 leading-relaxed">
+                The ultimate{" "}
+                <span className="text-white font-bold">gamified</span>{" "}
+                prediction platform for IIIT Nagpur. Trade virtual coins,
+                compete with peers, and climb the leaderboard.
+              </p>
+            </div>
+
+            {/* CTA Buttons */}
+            <div className="flex gap-4 flex-wrap">
+              {/* Primary Button - Flat Solid */}
+              <button className="px-10 py-4 bg-[#8b5cf6] hover:bg-[#7c3aed] rounded-xl font-semibold text-base text-white transition-all">
                 Start Predicting
               </button>
-              <button className="px-8 py-4 border border-[#a9f99e]/40 hover:border-[#a9f99e]/70 rounded-full font-semibold text-lg transition-all">
-                See How It Works
+
+              {/* Secondary Button - Clean Outline */}
+              <button className="px-8 py-3.5 bg-transparent border border-neutral-700 hover:bg-white hover:text-black rounded-lg font-medium text-base text-neutral-300 transition-all">
+                How it Works
               </button>
             </div>
-          </motion.div>
+
+            {/* Stats Bar */}
+            <div className="flex gap-8 pt-6 border-t border-white/10">
+              {[
+                { label: "Active Markets", value: "47" },
+                { label: "Total Volume", value: "₹2.4M" },
+                { label: "Players", value: "1.2K+" },
+              ].map((stat, i) => (
+                <div key={i} className="space-y-1">
+                  <p className="text-2xl font-black text-[#8b5cf6]">
+                    {stat.value}
+                  </p>
+                  <p className="text-xs text-gray-500 font-medium">
+                    {stat.label}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Right Side - Trading Composition */}
+          <div className="relative h-[500px] hidden md:block">
+            {/* YES Card - Green */}
+            <div className="absolute top-10 left-10 z-20">
+              <div className="w-56 h-72 bg-[#272727] border-2 border-[#a9f99e]/30 rounded-2xl p-8 hover:border-[#a9f99e]/60 transition-all">
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                      Prediction
+                    </span>
+                    <div className="w-10 h-10 bg-[#a9f99e]/10 rounded-lg flex items-center justify-center">
+                      <span className="text-2xl">✓</span>
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-400 mb-2">YES</p>
+                    <p className="text-6xl font-black text-[#a9f99e]">
+                      80<span className="text-4xl">%</span>
+                    </p>
+                  </div>
+                  <div className="pt-4 border-t border-white/5">
+                    <p className="text-xs text-gray-400 leading-relaxed">
+                      Will CSE win the Inter-Branch Tournament?
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* NO Card - Red */}
+            <div className="absolute top-32 right-10 z-20">
+              <div className="w-56 h-72 bg-[#272727] border-2 border-[#cc3131]/30 rounded-2xl p-8 hover:border-[#cc3131]/60 transition-all">
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                      Prediction
+                    </span>
+                    <div className="w-10 h-10 bg-[#cc3131]/10 rounded-lg flex items-center justify-center">
+                      <span className="text-2xl">✗</span>
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-400 mb-2">NO</p>
+                    <p className="text-6xl font-black text-[#cc3131]">
+                      20<span className="text-4xl">%</span>
+                    </p>
+                  </div>
+                  <div className="pt-4 border-t border-white/5">
+                    <p className="text-xs text-gray-400 leading-relaxed">
+                      Will CSE win the Inter-Branch Tournament?
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* VS Badge */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30">
+              <div className="w-16 h-16 bg-[#1e1e1e] border-2 border-[#a6a5f2] rounded-xl flex items-center justify-center font-black text-[#a6a5f2] text-lg">
+                VS
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Live Markets */}
       <section className="py-20 px-6">
         <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
+          <div>
             <div className="flex items-center justify-between mb-10">
-              <h3 className="text-4xl font-bold">Live Markets</h3>
-              <button className="text-[#A7A4F2] hover:underline">
+              <h3 className="text-3xl font-bold text-white">Live Markets</h3>
+              <a
+                href="#all"
+                className="text-[#8b5cf6] hover:text-[#7c3aed] text-sm font-medium transition-colors"
+              >
                 View All →
-              </button>
+              </a>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {liveMarkets.map((market, index) => (
-                <motion.div
+                <div
                   key={market.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                  whileHover={{ y: -5 }}
-                  className="bg-[#272727] border border-[#a9f99e]/20 hover:border-[#a9f99e]/50 rounded-2xl p-6 transition-all cursor-pointer group"
+                  className="rounded-2xl p-6 bg-[#272727] border border-white/5 hover:border-[#8b5cf6]/30 cursor-pointer transition-all"
                 >
                   <div className="flex items-center justify-between mb-4">
-                    <span
-                      className={`px-3 py-1 rounded-full text-xs font-medium ${
-                        index === 0
-                          ? "bg-[#A7A4F2]/20 text-[#A7A4F2]"
-                          : index === 1
-                            ? "bg-[#ff932e]/20 text-[#ff932e]"
-                            : "bg-[#A7A4F2]/20 text-[#A7A4F2]"
-                      }`}
-                    >
+                    <span className="px-2.5 py-1 bg-[#8b5cf6]/10 border border-[#8b5cf6]/30 rounded-lg text-[10px] font-semibold text-[#8b5cf6] uppercase">
                       {market.category}
                     </span>
-                    <div className="flex items-center gap-1 text-gray-400 text-xs">
-                      <Clock className="w-3 h-3" />
+                    <div className="flex items-center gap-2 text-gray-500 text-xs font-medium">
+                      <Clock className="w-3.5 h-3.5" />
                       {market.endsIn}
                     </div>
                   </div>
 
-                  <h4 className="text-lg font-semibold mb-6 leading-tight group-hover:text-[#A7A4F2] transition-colors">
+                  <h4 className="text-lg font-semibold mb-4 text-white leading-snug">
                     {market.question}
                   </h4>
 
-                  {/* Probability Bar */}
+                  {/* Probability Display */}
                   <div className="mb-4">
-                    <div className="flex justify-between text-xs mb-2">
-                      <span className="text-[#a9f99e]">
-                        YES {market.yesPercent}%
-                      </span>
-                      <span className="text-[#cc3131]">
-                        NO {market.noPercent}%
-                      </span>
+                    <div className="flex gap-2 mb-2">
+                      <div className="flex-1 h-2 bg-green-500/20 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-green-500"
+                          style={{ width: `${market.yesPercent}%` }}
+                        />
+                      </div>
+                      <div className="flex-1 h-2 bg-red-500/20 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-red-500"
+                          style={{ width: `${market.noPercent}%` }}
+                        />
+                      </div>
                     </div>
-                    <div className="h-2 bg-[#1e1e1e] rounded-full overflow-hidden flex">
-                      <div
-                        className="bg-[#a9f99e] transition-all"
-                        style={{ width: `${market.yesPercent}%` }}
-                      />
-                      <div
-                        className="bg-[#cc3131] transition-all"
-                        style={{ width: `${market.noPercent}%` }}
-                      />
+                    <div className="flex justify-between text-xs text-gray-400 font-medium">
+                      <span>Yes {market.yesPercent}%</span>
+                      <span>No {market.noPercent}%</span>
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between text-sm text-gray-400">
-                    <div className="flex items-center gap-1">
+                  <div className="flex items-center justify-between pt-4 border-t border-white/10">
+                    <div className="flex items-center gap-2 text-sm text-gray-400">
                       <Users className="w-4 h-4" />
-                      <span>Volume: {market.volume}</span>
+                      <span className="font-medium">{market.volume}</span>
                     </div>
+                    <button className="px-4 py-2 bg-[#8b5cf6] hover:bg-[#7c3aed] text-white rounded-lg text-xs font-semibold transition-all">
+                      Trade
+                    </button>
                   </div>
-                </motion.div>
+                </div>
               ))}
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
       {/* How It Works */}
-      <section className="py-20 px-6 bg-[#272727]/30">
+      <section className="py-20 px-6 bg-[#a6a5f2]/5">
         <div className="max-w-6xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <h3 className="text-4xl font-bold text-center mb-16">
+          <div>
+            <h3 className="text-4xl font-bold text-center mb-4 text-white">
               How It Works
             </h3>
+            <p className="text-center text-gray-500 mb-16">
+              Three simple steps to start winning
+            </p>
 
             <div className="grid md:grid-cols-3 gap-12">
               {[
@@ -222,38 +297,51 @@ export default function LandingPage() {
                     "Cash out winning positions and climb the leaderboard. Top predictors earn bragging rights!",
                 },
               ].map((step, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.15 }}
-                  className="text-center"
-                >
+                <div key={index} className="text-center group">
                   <div
-                    className={`w-16 h-16 mx-auto mb-6 ${
-                      index === 0
-                        ? "bg-[#A7A4F2]"
-                        : index === 1
-                          ? "bg-[#ff932e]"
-                          : "bg-[#A7A4F2]"
-                    } rounded-2xl flex items-center justify-center`}
+                    className="w-20 h-20 mx-auto mb-6 rounded-2xl flex items-center justify-center transition-colors"
+                    style={{
+                      backgroundColor:
+                        index === 0
+                          ? "#a6a5f220"
+                          : index === 1
+                            ? "#ff932e20"
+                            : "#a9f99e20",
+                      border:
+                        index === 0
+                          ? "2px solid #a6a5f240"
+                          : index === 1
+                            ? "2px solid #ff932e40"
+                            : "2px solid #a9f99e40",
+                    }}
                   >
-                    <step.icon className="w-8 h-8 text-white" />
+                    <step.icon
+                      className="w-10 h-10"
+                      style={{
+                        color:
+                          index === 0
+                            ? "#a6a5f2"
+                            : index === 1
+                              ? "#ff932e"
+                              : "#a9f99e",
+                      }}
+                    />
                   </div>
-                  <h4 className="text-xl font-bold mb-3">{step.title}</h4>
-                  <p className="text-gray-400">{step.description}</p>
-                </motion.div>
+                  <h4 className="text-2xl font-bold mb-3">{step.title}</h4>
+                  <p className="text-gray-400 leading-relaxed">
+                    {step.description}
+                  </p>
+                </div>
               ))}
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-12 px-6 border-t border-white/10">
+      <footer className="py-12 px-6 border-t border-[#a9f99e]/10">
         <div className="max-w-7xl mx-auto text-center text-gray-500 text-sm">
-          <p>© 2026 IIITN Predict. Built for IIIT Nagpur students.</p>
+          <p>© 2026 IIITN Predict. Built for IIIT Nagpur students with 💜</p>
         </div>
       </footer>
     </div>
