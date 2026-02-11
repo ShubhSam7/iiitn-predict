@@ -7,5 +7,9 @@
     "dev": "dev.cmd",
     "start": "./bin/server",
     "lint": "golangci-lint run"
+  },
+  "dependencies": {
+    "framer-motion": "^12.34.0",
+    "lucide-react": "^0.563.0"
   }
 }
